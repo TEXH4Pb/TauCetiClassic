@@ -64,6 +64,9 @@
 	consume(user)
 	return 1
 
+/obj/singularity/attack_tk(mob/user)
+	return
+
 /obj/singularity/Move(NewLoc, Dir = 0, step_x = 0, step_y = 0)
 	if(current_size >= STAGE_FIVE || check_turfs_in(Dir))
 		last_failed_movement = 0//Reset this because we moved
@@ -77,18 +80,12 @@
 
 /obj/singularity/ex_act(severity)
 	switch(severity)
-		if(1.0)
+		if(EXPLODE_DEVASTATE)
 			if(current_size <= 3)
 				log_investigate("has been destroyed by a heavy explosion.",INVESTIGATE_SINGULO)
 				qdel(src)
 				return
-			else
-				energy -= round(((energy+1)/2),1)
-		if(2.0)
-			energy -= round(((energy+1)/3),1)
-		if(3.0)
-			energy -= round(((energy+1)/4),1)
-	return
+	energy -= round(((energy + 1) / (severity + 1)), 1)
 
 /obj/singularity/Bump(atom/A)
 	consume(A)

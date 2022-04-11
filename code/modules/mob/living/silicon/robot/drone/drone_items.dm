@@ -200,7 +200,8 @@
 		/obj/item/robot_parts/l_arm,
 		/obj/item/robot_parts/r_arm,
 		/obj/item/robot_parts/l_leg,
-		/obj/item/robot_parts/r_leg
+		/obj/item/robot_parts/r_leg,
+		/obj/item/stack/sheet/mineral/phoron,
 		)
 
 /obj/item/weapon/gripper/examine(mob/user)
@@ -270,7 +271,7 @@
 			stored_comms["plastic"]++
 			return
 
-		else if(istype(M,/mob/living/silicon/robot/drone) && !M.client)
+		else if(isdrone(M) && !M.client)
 
 			var/mob/living/silicon/robot/drone/D = src.loc
 

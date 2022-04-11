@@ -107,7 +107,7 @@ var/global/can_call_ert
 	var/datum/faction/strike_team/ert/ERT = SSticker.mode.CreateFaction(/datum/faction/strike_team/ert)
 	ERT.forgeObjectives(objective_text)
 
-	create_spawners(/datum/spawner/ert, objective_text, 5, objective_text)
+	create_spawners(/datum/spawner/ert, 5, objective_text)
 
 	VARSET_IN(SSticker, ert_call_in_progress, FALSE, 5 MINUTES) // Can no longer join the ERT.
 	return 1
@@ -192,7 +192,7 @@ var/global/can_call_ert
 
 	//Creates mind stuff.
 	M.mind = new
-	M.mind.current = M
+	M.mind.set_current(M)
 	M.mind.original = M
 	M.mind.assigned_role = "MODE"
 	M.mind.special_role = "Response Team"

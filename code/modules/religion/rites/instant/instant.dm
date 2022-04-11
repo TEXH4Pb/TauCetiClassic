@@ -19,8 +19,11 @@
 	var/mob/living/silicon/S = locate() in get_turf(AOG)
 	if(S)
 		return TRUE
-	else if(!ishuman(AOG.buckled_mob))
+	if(!ishuman(AOG.buckled_mob))
 		to_chat(user, "<span class='warning'>Только человек может пройти через ритуал.</span>")
+		return FALSE
+	if(istype(AOG.buckled_mob, /mob/living/carbon/human/homunculus))
+		to_chat(user, "<span class='warning'>Тело гомункула слишком слабо.</span>")
 		return FALSE
 	return TRUE
 
@@ -66,7 +69,7 @@
 		sacrifice_favor *= 0.5
 	if(!L.ckey)
 		sacrifice_favor  *= 0.5
-	if(iscultist(L) && !istype(L, /mob/living/carbon/human/homunculus))
+	if(iscultist(L))
 		sacrifice_favor *= 2
 
 	return sacrifice_favor
@@ -83,6 +86,10 @@
 	if(!..())
 		return FALSE
 
+	if(!AOG.buckled_mob)
+		to_chat(user, "<span class='warning'>Для обращения нужно существо на алтаре.</span>")
+		return FALSE
+
 	if(!religion.can_convert(AOG.buckled_mob))
 		to_chat(user, "<span class='warning'>Вы не можете обратить это существо.</span>")
 		return FALSE
@@ -91,6 +98,11 @@
 
 /datum/religion_rites/instant/cult/convert/invoke_effect(mob/living/user, obj/AOG)
 	..()
+
+	if(!AOG.buckled_mob)
+		to_chat(user, "<span class='warning'>Для обращения нужно существо на алтаре.</span>")
+		return FALSE
+
 	if(!religion.can_convert(AOG.buckled_mob))
 		return FALSE
 
@@ -263,20 +275,32 @@
 /mob/living/carbon/human/homunculus
 	name = "homunculus of god"
 
+/mob/living/carbon/human/homunculus/atom_init()
+	. = ..()
+	ADD_TRAIT(src, TRAIT_SOULSTONE_IMMUNE, GENERIC_TRAIT)
+
 /datum/religion_rites/instant/cult/create_slave
 	name = "Создание Гомункула"
 	desc = "Создаёт гомункула, который может существовать только внутри территории религии."
 	ritual_length = (1 SECONDS) // plus 15 seconds of pollGhostCandidates
 	invoke_msg = "Приди же!!!"
-	favor_cost = 325
+	favor_cost = 300
 
 	needed_aspects = list(
 		ASPECT_SPAWN = 2,
 		ASPECT_MYSTIC = 2,
 	)
 
-/datum/religion_rites/instant/cult/create_slave/proc/slave_enter_area(mob/slave, area/A)
+/datum/religion_rites/instant/cult/create_slave/proc/slave_enter_area(mob/living/carbon/human/homunculus/slave, area/A)
 	if(!A.religion || !istype(slave.my_religion, A.religion.type))
+		slave.remove_from_mob(slave.wear_mask)
+		slave.remove_from_mob(slave.w_uniform)
+		slave.remove_from_mob(slave.head)
+		slave.remove_from_mob(slave.wear_suit)
+		slave.remove_from_mob(slave.back)
+		slave.remove_from_mob(slave.shoes)
+		slave.remove_from_mob(slave.l_hand)
+		slave.remove_from_mob(slave.r_hand)
 		slave.visible_message("<span class='userdanger'>[slave] медленно превращается в пыль и кости.</span>", \
 				"<span class='userdanger'>Вы чувствуете боль, когда разрывается связь между вашей душой и этим гомункулом.</span>", \
 				"<span class='userdanger'>Вы слышите множество тихих падений песчинок.</span>")
@@ -416,6 +440,8 @@
 	target.adjustBrainLoss(bdam)
 	user.adjustBrainLoss(bdam)
 	to_chat(user, "<span class='danger'>Ваш разум перемещается в другое тело. Вы чувствуете, как частичка себя теряется в забвенье.</span>")
+	target.logout_reason = LOGOUT_SWAP
+	user.logout_reason = LOGOUT_SWAP
 	var/mob/dead/observer/ghost = target.ghostize(FALSE)
 	user.mind.transfer_to(target)
 	ghost.mind.transfer_to(user)
@@ -627,11 +653,7 @@
 	desc = "Отправляет телепатическое сообщение всем членам религии!"
 	ritual_length = (5 SECONDS)
 	invoke_msg = "Услышь меня!!!"
-	favor_cost = 100
-
-	needed_aspects = list(
-		ASPECT_HERD = 1,
-	)
+	favor_cost = 50
 
 /datum/religion_rites/instant/communicate/invoke_effect(mob/living/user, obj/AOG)
 	..()

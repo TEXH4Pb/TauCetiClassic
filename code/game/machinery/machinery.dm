@@ -240,19 +240,13 @@ Class Procs:
 
 /obj/machinery/ex_act(severity)
 	switch(severity)
-		if(1.0)
-			qdel(src)
-			return
-		if(2.0)
+		if(EXPLODE_HEAVY)
 			if (prob(50))
-				qdel(src)
 				return
-		if(3.0)
-			if (prob(25))
-				qdel(src)
+		if(EXPLODE_LIGHT)
+			if (prob(75))
 				return
-		else
-	return
+	qdel(src)
 
 /obj/machinery/blob_act()
 	if(prob(50))
@@ -392,6 +386,10 @@ Class Procs:
 		return TRUE
 	if(!can_interact_with(user))
 		return TRUE
+	if(HAS_TRAIT_FROM(user, TRAIT_GREASY_FINGERS, QUALITY_TRAIT))
+		if(prob(75))
+			to_chat(user, "<span class='notice'>Your fingers are slipping.</span>")
+			return TRUE
 
 	if(hasvar(src, "wires"))              // Lets close wires window if panel is closed.
 		var/datum/wires/DW = vars["wires"] // Wires and machinery that uses this feature actually should be refactored.
@@ -541,8 +539,8 @@ Class Procs:
 	if(prob(85))
 		emp_act(2)
 	else if(prob(50))
-		ex_act(3)
+		ex_act(EXPLODE_LIGHT)
 	else if(prob(90))
-		ex_act(2)
+		ex_act(EXPLODE_HEAVY)
 	else
-		ex_act(1)
+		ex_act(EXPLODE_DEVASTATE)

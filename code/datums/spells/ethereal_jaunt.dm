@@ -41,7 +41,7 @@
 				var/mob/living/L = M
 				L.status_flags ^= GODMODE
 				L.ExtinguishMob()
-		var/image/I = image('icons/mob/blob.dmi', holder, "marker", layer = HUD_LAYER)
+		var/image/I = image('icons/mob/blob.dmi', holder, "marker")
 		I.plane = HUD_PLANE
 		holder.indicator = I
 		if(target.client)
@@ -123,7 +123,7 @@
 	last_move = 0
 	density = FALSE
 	anchored = TRUE
-	layer = 5
+	layer = FLY_LAYER
 	icon = 'icons/mob/mob.dmi'
 	icon_state = "blank"
 	var/mob/master
@@ -173,7 +173,7 @@
 	                  // chances of this occuring are very small
 	                  // as it requires 9x9 grid of impassable tiles ~getup1
 	for(var/turf/newloc in orange(1, mobloc))
-		if(newloc.is_mob_placeable(src) && !istype(newloc, /turf/space))
+		if(newloc.is_mob_placeable(src) && !isenvironmentturf(newloc))
 			found_ground = TRUE
 			to_gib = FALSE
 			forceMove(newloc)

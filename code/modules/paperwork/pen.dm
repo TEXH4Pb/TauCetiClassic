@@ -164,14 +164,18 @@
 /obj/item/weapon/pen/edagger
 	origin_tech = "combat=3;syndicate=1"
 	attack_verb = list("slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut") //these wont show up if the pen is off
-	tools = list()
+
+	qualities = null
 	flags = NOBLOODY
+
 	var/on = 0
 	var/hacked = 0
 
+	var/blade_color
+
 /obj/item/weapon/pen/edagger/atom_init()
 	. = ..()
-	item_color = pick("blue", "red", "green", "purple", "yellow", "pink", "black")
+	blade_color = pick("blue", "red", "green", "purple", "yellow", "pink", "black")
 
 /obj/item/weapon/pen/edagger/attack_self(mob/living/user)
 	..()
@@ -190,7 +194,7 @@
 		throwforce = initial(throwforce)
 		playsound(user, 'sound/weapons/saberoff.ogg', VOL_EFFECTS_MASTER, 5)
 		to_chat(user, "<span class='warning'>[src] can now be concealed.</span>")
-		tools = list()
+		qualities = null
 	else
 		on = 1
 		force = 18
@@ -203,8 +207,8 @@
 		throwforce = 35
 		playsound(user, 'sound/weapons/saberon.ogg', VOL_EFFECTS_MASTER, 5)
 		to_chat(user, "<span class='warning'>[src] is now active.</span>")
-		tools = list(
-			TOOL_KNIFE = 1
+		qualities = list(
+			QUALITY_CUTTING = 1
 			)
 	update_icon()
 
@@ -214,7 +218,7 @@
 		if(!hacked)
 			hacked = TRUE
 			to_chat(user,"<span class='warning'>RNBW_ENGAGE</span>")
-			item_color = "rainbow"
+			blade_color = "rainbow"
 			if (on)
 				toggle(user)
 		else
@@ -223,8 +227,8 @@
 
 /obj/item/weapon/pen/edagger/update_icon()
 	if(on)
-		icon_state = "edagger[item_color]"
-		item_state = "edagger[item_color]"
+		icon_state = "edagger[blade_color]"
+		item_state = "edagger[blade_color]"
 	else
 		clean_blood()
 		icon_state = initial(icon_state) //looks like a normal pen when off.
@@ -236,31 +240,31 @@
 
 /obj/item/weapon/pen/edagger/blue/atom_init()
 	. = ..()
-	item_color = "blue"
+	blade_color = "blue"
 
 /obj/item/weapon/pen/edagger/red/atom_init()
 	. = ..()
-	item_color = "red"
+	blade_color = "red"
 
 /obj/item/weapon/pen/edagger/green/atom_init()
 	. = ..()
-	item_color = "green"
+	blade_color = "green"
 
 /obj/item/weapon/pen/edagger/purple/atom_init()
 	. = ..()
-	item_color = "purple"
+	blade_color = "purple"
 
 /obj/item/weapon/pen/edagger/yellow/atom_init()
 	. = ..()
-	item_color = "yellow"
+	blade_color = "yellow"
 
 /obj/item/weapon/pen/edagger/pink/atom_init()
 	. = ..()
-	item_color = "pink"
+	blade_color = "pink"
 
 /obj/item/weapon/pen/edagger/black/atom_init()
 	. = ..()
-	item_color = "black"
+	blade_color = "black"
 
 /*
  * Legit edagger for NT boys
@@ -271,7 +275,7 @@
 
 /obj/item/weapon/pen/edagger/legitimate/atom_init()
 	. = ..()
-	item_color = "blue"
+	blade_color = "blue"
 
 /*
  * Chameleon pen

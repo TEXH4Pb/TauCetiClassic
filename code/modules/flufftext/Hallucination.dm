@@ -52,14 +52,13 @@ Gunshots/explosions/opening doors/less rare audio (done)
 					var/list/slots_free = list(ui_lhand,ui_rhand)
 					if(l_hand) slots_free -= ui_lhand
 					if(r_hand) slots_free -= ui_rhand
-					if(istype(src,/mob/living/carbon/human))
+					if(ishuman(src))
 						var/mob/living/carbon/human/H = src
 						if(!H.belt) slots_free += ui_belt
 						if(!H.l_store) slots_free += ui_storage1
 						if(!H.r_store) slots_free += ui_storage2
 					if(slots_free.len)
 						halitem.screen_loc = pick(slots_free)
-						halitem.layer = ABOVE_HUD_LAYER
 						halitem.plane = ABOVE_HUD_PLANE
 						switch(rand(1,6))
 							if(1) //revolver

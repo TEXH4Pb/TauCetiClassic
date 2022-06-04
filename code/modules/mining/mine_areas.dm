@@ -144,3 +144,10 @@
 	icon_state = "dwarf"
 
 	outdoors = FALSE
+
+/**********************Labor camp areas**************************/
+/area/asteroid/labor/camp
+	name = "Labor Camp"
+	icon_state = "labor_camp"
+
+	outdoors = FALSE
